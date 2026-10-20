@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String             @id
+  googleId       String?            @unique @map("google_id")
+  email          String             @unique
+  hashedPassword String?            @map("hashed_password")
+  name           String?            @map("full_name")
+  picture        String?            @map("profile_picture")
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @default(now()) @updatedAt @map("updated_at")
+  sessions       Session[]
+  assessments    CareerAssessment[]
+  savedPaths     SavedCareerPath[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id
+  userId    String   @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model CareerAssessment {
+  id                   String   @id @default(cuid())
+  userId               String?  @map("user_id")
+  user                 User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                 String?
+  skills               String[]
+  interests            String[]
+  recommendedPathId    String   @map("recommended_path_id")
+  recommendedPathTitle String   @map("recommended_path_title")
+  reason               String?
+  matchedItems         String[] @map("matched_items")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([recommendedPathId])
+  @@map("career_assessments")
+}
+
+model SavedCareerPath {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pathId    String   @map("path_id")
+  status    String   @default("exploring") // "exploring" | "learning" | "target"
+  notes     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, pathId])
+  @@index([userId])
+  @@index([pathId])
+  @@map("saved_career_paths")
+}

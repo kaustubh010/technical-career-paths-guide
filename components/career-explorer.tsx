@@ -1,18 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   ArrowRight,
   Bot,
   Braces,
   Check,
-  ChevronRight,
   CircuitBoard,
   Code2,
   Database,
   Eye,
   GitBranch,
-  LockKeyhole,
   Network,
   Search,
   Server,
@@ -21,6 +19,13 @@ import {
   TestTube2,
   UserRound,
   Workflow,
+  X,
+  Bookmark,
+  BookmarkCheck,
+  ExternalLink,
+  LogIn,
+  LogOut,
+  User as UserIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,8 +38,10 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
-type Career = {
+export type Career = {
   id: string;
   title: string;
   family: string;
@@ -48,7 +55,7 @@ type Career = {
   level: string;
 };
 
-const careers: Career[] = [
+export const careers: Career[] = [
   {
     id: "frontend",
     title: "Frontend Engineer",
@@ -57,21 +64,21 @@ const careers: Career[] = [
     description:
       "Turn product ideas and designs into fast, accessible interfaces that people use every day.",
     work: [
-      "Build reusable UI with React, Vue, or another component framework",
-      "Translate designs into responsive, accessible pages",
-      "Manage client-side state, performance, and browser behavior",
-      "Collaborate with designers and backend engineers",
+      "Build reusable UI with React, Vue, or modern component frameworks",
+      "Translate Figma designs into responsive, accessible pages",
+      "Manage client-side state, performance, and browser rendering behavior",
+      "Collaborate closely with product designers and backend engineers",
     ],
     skills: [
-      "HTML, CSS, and JavaScript",
-      "React and TypeScript",
-      "Responsive design and accessibility",
+      "HTML, CSS, and modern JavaScript",
+      "React, Next.js, and TypeScript",
+      "Responsive layout and accessibility (WCAG)",
       "Testing with Vitest or Playwright",
-      "Git, APIs, and browser DevTools",
+      "Git, REST/GraphQL APIs, and browser DevTools",
     ],
-    tools: ["React", "TypeScript", "Next.js", "CSS"],
+    tools: ["React", "TypeScript", "Next.js", "Tailwind CSS"],
     icon: Braces,
-    accent: "bg-sky-100 text-sky-700",
+    accent: "bg-sky-500/10 text-sky-400 border-sky-500/20",
     level: "Common entry point",
   },
   {
@@ -80,23 +87,23 @@ const careers: Career[] = [
     family: "Software engineering",
     eyebrow: "Power the product",
     description:
-      "Design the services, APIs, and data systems that make applications reliable and useful.",
+      "Design the services, APIs, and data systems that make applications reliable, fast, and scalable.",
     work: [
-      "Design APIs and business logic",
-      "Model data and write efficient database queries",
-      "Build authentication, authorization, and integrations",
-      "Monitor reliability, latency, and operational health",
+      "Design and maintain scalable REST & GraphQL APIs and microservices",
+      "Model relational data and optimize database queries",
+      "Implement robust authentication, authorization, and 3rd-party integrations",
+      "Monitor system reliability, latency, and operational health",
     ],
     skills: [
-      "One server-side language",
-      "HTTP, REST, and API design",
-      "SQL and data modeling",
-      "Testing and observability",
-      "Security fundamentals",
+      "Server languages (Node.js, Go, Python, or Java)",
+      "HTTP, REST, and distributed API design",
+      "SQL data modeling and indexing",
+      "Testing, caching, and observability",
+      "Security best practices and encryption",
     ],
-    tools: ["Node.js", "Python", "PostgreSQL", "Docker"],
+    tools: ["Node.js", "Python", "PostgreSQL", "Docker", "Redis"],
     icon: Server,
-    accent: "bg-indigo-100 text-indigo-700",
+    accent: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
     level: "Strong fundamentals",
   },
   {
@@ -105,23 +112,23 @@ const careers: Career[] = [
     family: "Software engineering",
     eyebrow: "Connect the whole system",
     description:
-      "Work across the frontend and backend to ship complete product features from interface to database.",
+      "Work across frontend, backend, and cloud to ship complete product features end-to-end.",
     work: [
-      "Own a feature across UI, API, and persistence layers",
-      "Make trade-offs between user experience and system design",
-      "Create end-to-end tests and debug across the stack",
-      "Work closely with product, design, and platform teams",
+      "Own product features across UI, API, and database persistence layers",
+      "Make architectural trade-offs between UX and system complexity",
+      "Create end-to-end integration tests and debug across the stack",
+      "Coordinate with product, design, and operations teams",
     ],
     skills: [
-      "Strong JavaScript or TypeScript",
-      "A frontend and backend framework",
-      "Relational databases",
-      "Deployment and cloud basics",
-      "Product thinking and debugging",
+      "TypeScript, modern JavaScript, and React",
+      "Backend frameworks and relational/NoSQL databases",
+      "API design and state synchronization",
+      "Deployment, containers, and serverless architectures",
+      "Product-minded problem solving",
     ],
-    tools: ["Next.js", "TypeScript", "SQL", "Git"],
+    tools: ["Next.js", "TypeScript", "PostgreSQL", "Docker", "Prisma"],
     icon: Workflow,
-    accent: "bg-violet-100 text-violet-700",
+    accent: "bg-violet-500/10 text-violet-400 border-violet-500/20",
     level: "Broad skill set",
   },
   {
@@ -130,23 +137,23 @@ const careers: Career[] = [
     family: "Software engineering",
     eyebrow: "Make shipping boring",
     description:
-      "Build the tooling and infrastructure that helps teams release software safely and consistently.",
+      "Build the tooling and infrastructure that helps engineering teams release software safely and predictably.",
     work: [
-      "Automate build, test, and deployment pipelines",
-      "Provision and maintain cloud infrastructure",
-      "Improve reliability, observability, and incident response",
-      "Set guardrails for security and developer productivity",
+      "Automate build, test, and zero-downtime deployment pipelines",
+      "Provision and maintain cloud infrastructure via Infrastructure as Code",
+      "Improve system reliability, metrics, alerting, and incident response",
+      "Establish security guardrails and developer productivity tools",
     ],
     skills: [
-      "Linux and networking",
-      "Cloud platforms and containers",
-      "CI/CD and infrastructure as code",
-      "Monitoring and incident response",
-      "Scripting and automation",
+      "Linux system administration and networking",
+      "Cloud platforms (AWS/GCP/Azure) and containers",
+      "CI/CD workflows and Terraform / OpenTofu",
+      "Prometheus, Grafana, and distributed tracing",
+      "Automation scripting with Bash and Python",
     ],
-    tools: ["AWS", "Docker", "Kubernetes", "Terraform"],
+    tools: ["AWS", "Docker", "Kubernetes", "Terraform", "GitHub Actions"],
     icon: GitBranch,
-    accent: "bg-amber-100 text-amber-700",
+    accent: "bg-amber-500/10 text-amber-400 border-amber-500/20",
     level: "Systems minded",
   },
   {
@@ -155,73 +162,73 @@ const careers: Career[] = [
     family: "Quality engineering",
     eyebrow: "Protect the experience",
     description:
-      "Find risk before users do by designing reliable ways to validate software behavior and quality.",
+      "Find risk before users do by designing reliable ways to validate software behavior, performance, and quality.",
     work: [
-      "Create test plans from requirements and user journeys",
-      "Automate regression and end-to-end checks",
-      "Investigate failures and communicate actionable bugs",
-      "Partner with engineers to improve testability",
+      "Create comprehensive test plans from product specs and edge cases",
+      "Develop automated end-to-end and regression test suites",
+      "Investigate bugs, isolate root causes, and log clear reproductions",
+      "Partner with developers to build testable, maintainable systems",
     ],
     skills: [
-      "Testing strategy and test design",
-      "A programming language",
-      "API and UI automation",
-      "CI pipelines and defect tracking",
-      "Exploratory and performance testing",
+      "Testing strategies, test matrix design, and exploratory testing",
+      "Automation scripting (TypeScript, Python)",
+      "UI and API automation frameworks",
+      "CI integration and defect tracking",
+      "Load and performance testing fundamentals",
     ],
-    tools: ["Playwright", "Selenium", "Postman", "Jira"],
+    tools: ["Playwright", "Cypress", "Postman", "Jest", "k6"],
     icon: TestTube2,
-    accent: "bg-rose-100 text-rose-700",
+    accent: "bg-rose-500/10 text-rose-400 border-rose-500/20",
     level: "Detail oriented",
   },
   {
     id: "aiml",
     title: "AI / ML Engineer",
     family: "Data & intelligence",
-    eyebrow: "Turn data into decisions",
+    eyebrow: "Build intelligent systems",
     description:
-      "Build, evaluate, and operate machine-learning systems that solve specific business or scientific problems.",
+      "Design, fine-tune, and deploy machine learning models and LLM systems into production products.",
     work: [
-      "Prepare data and select appropriate modeling approaches",
-      "Train, evaluate, and improve models",
-      "Build inference pipelines and integrate models into products",
-      "Track drift, fairness, cost, and model quality in production",
+      "Prepare datasets, pipelines, and evaluation benchmarks",
+      "Train, fine-tune, and evaluate deep learning and statistical models",
+      "Build RAG systems, agent pipelines, and embedding search flows",
+      "Optimize model inference latency, quantization, and deployment",
     ],
     skills: [
-      "Python and statistics",
+      "Python, NumPy, Pandas, and statistics",
       "Linear algebra and probability",
-      "Supervised and unsupervised learning",
-      "Model evaluation and experimentation",
-      "Data pipelines and ML deployment",
+      "PyTorch, Transformers, and LLM orchestration",
+      "Model evaluation, fine-tuning, and vector databases",
+      "MLOps and containerized model serving",
     ],
-    tools: ["Python", "PyTorch", "scikit-learn", "MLflow"],
+    tools: ["Python", "PyTorch", "Hugging Face", "LangChain", "FastAPI"],
     icon: Bot,
-    accent: "bg-fuchsia-100 text-fuchsia-700",
+    accent: "bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/20",
     level: "Math + engineering",
   },
   {
     id: "data",
-    title: "Data Analyst",
+    title: "Data Analyst / Engineer",
     family: "Data & intelligence",
     eyebrow: "Explain what is happening",
     description:
-      "Use data to answer practical questions, reveal patterns, and help teams make better decisions.",
+      "Turn raw event streams and databases into trustworthy metrics, clear dashboards, and actionable insights.",
     work: [
-      "Define metrics and gather trustworthy data",
-      "Clean, query, and analyze datasets",
-      "Build dashboards and communicate findings",
-      "Translate business questions into measurable analysis",
+      "Define business metrics and model analytical data schemas",
+      "Clean, transform, and orchestrate automated data pipelines",
+      "Build interactive dashboards and present findings to leadership",
+      "Translate ambiguous questions into rigorous quantitative queries",
     ],
     skills: [
-      "SQL and spreadsheets",
-      "Descriptive statistics",
-      "Data visualization",
-      "Clear written and verbal communication",
-      "Experiment and metric fundamentals",
+      "Advanced SQL and query optimization",
+      "Python data manipulation and pandas",
+      "Data visualization and business intelligence",
+      "Statistical hypothesis testing and experimentation",
+      "Data pipeline orchestrators (dbt, Airflow)",
     ],
-    tools: ["SQL", "Python", "Tableau", "Excel"],
+    tools: ["SQL", "Python", "Tableau", "dbt", "Snowflake"],
     icon: Search,
-    accent: "bg-emerald-100 text-emerald-700",
+    accent: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
     level: "Insight focused",
   },
   {
@@ -230,23 +237,23 @@ const careers: Career[] = [
     family: "Product & design",
     eyebrow: "Make complexity feel simple",
     description:
-      "Understand user needs and shape intuitive, useful experiences through research, flows, and visual systems.",
+      "Understand user needs and shape intuitive, beautiful digital products through research, flows, and design systems.",
     work: [
-      "Research users and frame the right problem",
-      "Map journeys, flows, and interaction patterns",
-      "Create wireframes, prototypes, and visual designs",
-      "Test concepts and iterate with product teams",
+      "Conduct user interviews, surveys, and usability testing",
+      "Map user journeys, wireframes, and information architecture",
+      "Build cohesive design systems and pixel-perfect interactive prototypes",
+      "Partner with engineers to ensure design fidelity in code",
     ],
     skills: [
       "User research and usability testing",
-      "Information architecture",
-      "Interaction and visual design",
-      "Prototyping and design systems",
-      "Communication and critique",
+      "Interaction design and information architecture",
+      "Design systems and token management",
+      "High-fidelity prototyping in Figma",
+      "Design-to-code collaboration",
     ],
-    tools: ["Figma", "FigJam", "Prototyping", "Research"],
+    tools: ["Figma", "FigJam", "Framer", "Design Systems"],
     icon: Eye,
-    accent: "bg-pink-100 text-pink-700",
+    accent: "bg-pink-500/10 text-pink-400 border-pink-500/20",
     level: "People centered",
   },
   {
@@ -255,445 +262,705 @@ const careers: Career[] = [
     family: "Security & infrastructure",
     eyebrow: "Reduce digital risk",
     description:
-      "Protect systems, networks, and data by finding weaknesses and building practical security controls.",
+      "Protect infrastructure, networks, and data by uncovering vulnerabilities and building defensive controls.",
     work: [
-      "Monitor systems and investigate suspicious activity",
-      "Assess vulnerabilities and recommend mitigations",
-      "Build secure configurations and access controls",
-      "Support incident response and security education",
+      "Monitor security telemetry and investigate suspicious activity",
+      "Conduct vulnerability assessments, penetration tests, and threat modeling",
+      "Implement identity management, zero-trust network access, and encryption",
+      "Collaborate on incident response and compliance verification",
     ],
     skills: [
-      "Networking and operating systems",
-      "Security principles and threat modeling",
-      "Scripting and automation",
-      "Identity, access, and encryption",
-      "Log analysis and incident response",
+      "Networking protocols, firewalls, and operating systems",
+      "Threat modeling, OWASP, and adversarial thinking",
+      "Security automation and scripting (Python, Bash)",
+      "Identity, IAM, and public key cryptography",
+      "Log analysis (SIEM) and incident triage",
     ],
-    tools: ["Linux", "SIEM", "Python", "Cloud IAM"],
+    tools: ["Linux", "Wireshark", "Burp Suite", "Python", "Cloud IAM"],
     icon: ShieldCheck,
-    accent: "bg-cyan-100 text-cyan-700",
+    accent: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
     level: "Adversarial thinking",
   },
   {
     id: "embedded",
-    title: "Embedded Engineer",
+    title: "Embedded Systems Engineer",
     family: "Hardware & systems",
     eyebrow: "Make hardware think",
     description:
-      "Write software that runs close to the hardware in devices, appliances, vehicles, and connected products.",
+      "Write low-level firmware that runs directly on microcontrollers, IoT devices, automotive systems, and robotics.",
     work: [
-      "Develop firmware for microcontrollers and embedded systems",
-      "Work with sensors, buses, and hardware interfaces",
-      "Optimize for memory, timing, power, and reliability",
-      "Debug with hardware tools and collaborate with electrical engineers",
+      "Develop firmware for ARM, ESP32, and custom microcontrollers",
+      "Interface with sensors, actuators, and communication buses (I2C, SPI, CAN)",
+      "Optimize memory footprints, power consumption, and deterministic timing",
+      "Debug with logic analyzers, oscilloscopes, and JTAG hardware debuggers",
     ],
     skills: [
-      "C or C++",
-      "Digital logic and microcontrollers",
-      "Data sheets and hardware interfaces",
-      "Real-time systems",
-      "Debugging and version control",
+      "C and Modern C++ for resource-constrained systems",
+      "Microcontroller architectures and peripheral configuration",
+      "Real-Time Operating Systems (FreeRTOS, Zephyr)",
+      "Reading hardware datasheets and circuit schematics",
+      "Low-level debugging and safety critical practices",
     ],
-    tools: ["C/C++", "ARM", "RTOS", "JTAG"],
+    tools: ["C/C++", "FreeRTOS", "ARM Cortex", "JTAG", "PlatformIO"],
     icon: CircuitBoard,
-    accent: "bg-orange-100 text-orange-700",
+    accent: "bg-orange-500/10 text-orange-400 border-orange-500/20",
     level: "Hardware curious",
   },
   {
     id: "cloud",
-    title: "Cloud / Solutions Engineer",
+    title: "Cloud Solutions Architect",
     family: "Infrastructure & platforms",
-    eyebrow: "Design for scale",
+    eyebrow: "Design for global scale",
     description:
-      "Help teams choose and connect cloud services to build secure, scalable, and maintainable systems.",
+      "Architect and orchestrate resilient, secure, and cost-efficient cloud environments for enterprise applications.",
     work: [
-      "Translate requirements into cloud architectures",
-      "Design for availability, cost, and security",
-      "Implement migrations and integrations",
-      "Document systems and guide technical decisions",
+      "Translate business and latency requirements into cloud system architectures",
+      "Design multi-region high availability and disaster recovery plans",
+      "Optimize cloud spending, networking topologies, and security policies",
+      "Guide development teams on best practices for cloud-native patterns",
     ],
     skills: [
-      "Networking and distributed systems",
-      "Cloud architecture patterns",
-      "Infrastructure as code",
-      "Security and cost management",
-      "Technical communication",
+      "Cloud architecture design (AWS, Azure, or GCP)",
+      "Distributed systems and event-driven patterns",
+      "Infrastructure as Code (Terraform, CloudFormation)",
+      "Cloud security posture, compliance, and cost modeling",
+      "Technical diagrams and executive communication",
     ],
-    tools: ["AWS", "Azure", "Terraform", "Kubernetes"],
+    tools: ["AWS", "Azure", "Terraform", "Kubernetes", "Cloudflare"],
     icon: Network,
-    accent: "bg-lime-100 text-lime-700",
+    accent: "bg-lime-500/10 text-lime-400 border-lime-500/20",
     level: "Architecture minded",
   },
   {
     id: "systems",
-    title: "Systems / Network Engineer",
+    title: "Systems & Network Engineer",
     family: "Infrastructure & platforms",
     eyebrow: "Keep systems connected",
     description:
-      "Operate the foundational networks and computing environments that organizations depend on.",
+      "Operate and secure the underlying server fleets, storage arrays, and network backbones that companies rely on.",
     work: [
-      "Configure and maintain networks, servers, and services",
-      "Manage identity, backups, patching, and capacity",
-      "Troubleshoot outages and performance issues",
-      "Automate repetitive operations and document runbooks",
+      "Configure and tune enterprise Linux/Unix servers and virtual machines",
+      "Manage routing, switching, DNS, VPNs, and firewall rules",
+      "Implement backup strategies, high availability, and automated patching",
+      "Triage hardware failures, packet loss, and kernel-level performance bottlenecks",
     ],
     skills: [
-      "TCP/IP and networking",
-      "Linux or Windows administration",
-      "DNS, HTTP, and virtualization",
-      "Monitoring and troubleshooting",
-      "Automation with Python or shell",
+      "TCP/IP, BGP, VLANs, and software-defined networking",
+      "Linux kernel tuning and storage subsystems (ZFS, Ceph)",
+      "DNS, DHCP, TLS/SSL certificate lifecycle",
+      "Monitoring with Nagios, Prometheus, and SNMP",
+      "Scripting in Bash and Python for sysadmin automation",
     ],
-    tools: ["Linux", "TCP/IP", "Bash", "VMware"],
+    tools: ["Linux", "TCP/IP", "Bash", "VMware", "Ansible"],
     icon: Database,
-    accent: "bg-teal-100 text-teal-700",
+    accent: "bg-teal-500/10 text-teal-400 border-teal-500/20",
     level: "Foundational role",
   },
 ];
 
+const categories = [
+  "All Paths",
+  "Software engineering",
+  "Data & intelligence",
+  "Security & infrastructure",
+  "Hardware & systems",
+  "Product & design",
+  "Quality engineering",
+];
+
 export function CareerExplorer() {
-  const [selectedId, setSelectedId] = useState("frontend");
+  const [modalCareer, setModalCareer] = useState<Career | null>(null);
   const [query, setQuery] = useState("");
-  const selected =
-    careers.find((career) => career.id === selectedId) ?? careers[0];
-  const filteredCareers = useMemo(
-    () =>
-      careers.filter((career) =>
-        `${career.title} ${career.family} ${career.description}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      ),
-    [query],
-  );
-  const SelectedIcon = selected.icon;
+  const [selectedCategory, setSelectedCategory] = useState("All Paths");
+  const [savedPathIds, setSavedPathIds] = useState<string[]>([]);
+  const [savingPathId, setSavingPathId] = useState<string | null>(null);
+
+  const { user, logout } = useAuth();
+  const { toast } = useToast();
+
+  // Load saved paths if user is logged in
+  useEffect(() => {
+    if (!user) {
+      setSavedPathIds([]);
+      return;
+    }
+
+    const loadSaved = async () => {
+      try {
+        const res = await fetch("/api/saved-paths");
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.savedPaths)) {
+            setSavedPathIds(data.savedPaths.map((p: any) => p.pathId));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load saved paths", err);
+      }
+    };
+
+    loadSaved();
+  }, [user]);
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setModalCareer(null);
+      }
+    };
+    if (modalCareer) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [modalCareer]);
+
+  const toggleSavePath = async (pathId: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please create an account or sign in to save your career paths.",
+      });
+      return;
+    }
+
+    setSavingPathId(pathId);
+    const isSaved = savedPathIds.includes(pathId);
+
+    try {
+      if (isSaved) {
+        const res = await fetch(`/api/saved-paths?pathId=${pathId}`, {
+          method: "DELETE",
+        });
+        if (res.ok) {
+          setSavedPathIds((prev) => prev.filter((id) => id !== pathId));
+          toast({
+            title: "Path removed",
+            description: "Career path has been removed from your saved list.",
+          });
+        }
+      } else {
+        const res = await fetch("/api/saved-paths", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pathId, status: "exploring" }),
+        });
+        if (res.ok) {
+          setSavedPathIds((prev) => [...prev, pathId]);
+          toast({
+            title: "Path saved!",
+            description: "This career path is bookmarked to your account.",
+            variant: "success",
+          });
+        }
+      }
+    } catch (err) {
+      toast({
+        title: "Action failed",
+        description: "Could not update saved paths. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setSavingPathId(null);
+    }
+  };
+
+  const filteredCareers = useMemo(() => {
+    return careers.filter((career) => {
+      const matchesCategory =
+        selectedCategory === "All Paths" ||
+        career.family.toLowerCase() === selectedCategory.toLowerCase();
+
+      const searchText =
+        `${career.title} ${career.family} ${career.eyebrow} ${career.description} ${career.tools.join(" ")}`.toLowerCase();
+      const matchesQuery = searchText.includes(query.toLowerCase());
+
+      return matchesCategory && matchesQuery;
+    });
+  }, [query, selectedCategory]);
 
   return (
     <div className="dark min-h-screen bg-[#080b12] text-slate-100">
-      <header className="border-b border-white/10 bg-[#0b111b]/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-8">
+      {/* Navigation Header */}
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#080b12]/85 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
           <a
-            href="#top"
-            className="flex items-center gap-3"
+            href="/"
+            className="flex items-center gap-3 transition-opacity hover:opacity-90"
             aria-label="Pathfinder home"
           >
-            <span className="flex size-10 items-center justify-center rounded-2xl bg-slate-950 text-lime-300 shadow-sm">
-              <Sparkles aria-hidden="true" />
+            <span className="flex size-10 items-center justify-center rounded-2xl bg-lime-300 text-slate-950 shadow-md shadow-lime-300/20">
+              <Sparkles className="size-5" aria-hidden="true" />
             </span>
             <span className="font-mono text-sm font-bold tracking-tight">
-              PATHFINDER<span className="text-lime-600">_</span>
+              PATHFINDER<span className="text-lime-400">_</span>
             </span>
           </a>
-          <nav className="flex items-center gap-3 text-xs sm:gap-5 sm:text-sm">
+
+          <nav className="flex items-center gap-4 text-xs sm:gap-6 sm:text-sm">
+            <a
+              href="#paths"
+              className="text-slate-300 transition hover:text-lime-300"
+            >
+              Career Paths
+            </a>
+            <a
+              href="/pathfinder"
+              className="text-slate-300 transition hover:text-lime-300"
+            >
+              Take Quiz
+            </a>
             <a
               href="/resources/frontend"
-              className="text-slate-400 transition hover:text-lime-300"
+              className="text-slate-300 transition hover:text-lime-300"
             >
               Resources
             </a>
-            <a
-              href="/auth"
-              className="rounded-full border border-lime-300/30 bg-lime-300/10 px-3 py-1.5 font-semibold text-lime-200 transition hover:bg-lime-300/20"
-            >
-              Sign in
-            </a>
-            <span className="hidden rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-xs text-slate-400 sm:inline">
-              2026 edition
-            </span>
+
+            {user ? (
+              <div className="flex items-center gap-3">
+                <span className="hidden items-center gap-2 rounded-full border border-lime-400/20 bg-lime-300/10 px-3 py-1 font-mono text-xs text-lime-300 sm:inline-flex">
+                  <UserIcon className="size-3" />
+                  {user.name || user.email.split("@")[0]}
+                </span>
+                <button
+                  onClick={() => logout()}
+                  title="Sign out"
+                  className="rounded-full border border-white/10 bg-white/5 p-2 text-slate-400 transition hover:bg-white/10 hover:text-white"
+                >
+                  <LogOut className="size-4" />
+                </button>
+              </div>
+            ) : (
+              <a
+                href="/auth"
+                className="flex items-center gap-1.5 rounded-full border border-lime-300/40 bg-lime-300/10 px-4 py-1.5 font-semibold text-lime-200 transition hover:bg-lime-300/20"
+              >
+                <LogIn className="size-4" />
+                Sign in
+              </a>
+            )}
           </nav>
         </div>
       </header>
 
-      <main
-        id="top"
-        className="mx-auto max-w-7xl px-5 pb-20 pt-12 lg:px-8 lg:pt-20"
-      >
-        <section className="relative overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-10 text-white shadow-xl shadow-slate-950/10 sm:px-10 lg:px-14 lg:py-16">
-          <div className="pointer-events-none absolute -right-24 -top-32 size-96 rounded-full bg-lime-300/15 blur-3xl" />
-          <div className="pointer-events-none absolute bottom-0 right-1/3 size-64 rounded-full bg-violet-400/10 blur-3xl" />
+      <main id="top" className="mx-auto max-w-7xl px-5 pb-24 pt-10 lg:px-8 lg:pt-16">
+        {/* Hero Section */}
+        <section className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-slate-950 px-6 py-12 text-white shadow-2xl shadow-slate-950/40 sm:px-10 lg:px-14 lg:py-16">
+          <div className="pointer-events-none absolute -right-20 -top-32 size-96 rounded-full bg-lime-400/15 blur-3xl" />
+          <div className="pointer-events-none absolute bottom-0 right-1/4 size-72 rounded-full bg-emerald-500/10 blur-3xl" />
+
           <div className="relative max-w-3xl">
-            <Badge className="mb-6 border-lime-300/30 bg-lime-300/10 text-lime-200 hover:bg-lime-300/10">
-              <span className="mr-2 size-1.5 rounded-full bg-lime-300" />
-              Explore before you specialize
+            <Badge className="mb-5 border-lime-300/30 bg-lime-300/10 text-lime-200 hover:bg-lime-300/15">
+              <span className="mr-2 size-2 rounded-full bg-lime-300 animate-pulse" />
+              Technical Engineering Guide
             </Badge>
-            <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-[-0.04em] sm:text-6xl">
+
+            <h1 className="text-balance text-4xl font-semibold tracking-[-0.04em] sm:text-6xl">
               Your engineering degree has{" "}
               <span className="text-lime-300">more than one route.</span>
             </h1>
+
             <p className="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-              A practical map of the technical careers you can build toward —
-              what the work looks like, where your skills fit, and what to learn
-              next.
+              Explore 12 high-impact technical career paths. Click on any path to open
+              detailed breakdowns of day-to-day work, required skills, toolkit stacks,
+              and curated learning roadmaps.
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-5 text-sm text-slate-300">
+
+            <div className="mt-8 flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-slate-300">
               <span className="flex items-center gap-2">
-                <Check className="text-lime-300" data-icon="inline-start" />
-                12 paths
+                <Check className="size-4 text-lime-300" />
+                12 Specialized Paths
               </span>
               <span className="flex items-center gap-2">
-                <Check className="text-lime-300" data-icon="inline-start" />
-                Real-world skills
+                <Check className="size-4 text-lime-300" />
+                Real-world Skill Profiles
               </span>
               <span className="flex items-center gap-2">
-                <Check className="text-lime-300" data-icon="inline-start" />
-                No gatekeeping
+                <Check className="size-4 text-lime-300" />
+                Assessment Data Saver
               </span>
             </div>
           </div>
         </section>
 
-        <section className="mt-14 grid gap-10 lg:grid-cols-[0.86fr_1.14fr] lg:items-start">
-          <div>
-            <div className="mb-6 flex items-end justify-between gap-4">
-              <div>
-                <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-lime-700">
-                  01 / Pick a direction
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-                  Technical paths
-                </h2>
-              </div>
-              <span className="font-mono text-xs text-slate-400">
-                {filteredCareers.length.toString().padStart(2, "0")} available
-              </span>
+        {/* Career Paths Directory Section */}
+        <section id="paths" className="mt-16">
+          <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-lime-400">
+                01 / Explore & Discover
+              </p>
+              <h2 className="mt-1 text-3xl font-semibold tracking-tight text-white">
+                Technical Career Paths
+              </h2>
+              <p className="mt-1 text-sm text-slate-400">
+                Select any path card to view its complete role overview in a popup card.
+              </p>
             </div>
-            <div className="relative mb-5">
+
+            <div className="relative w-full sm:w-72">
               <Search
                 aria-hidden="true"
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400"
               />
               <input
                 aria-label="Search career paths"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search paths or skills..."
-                className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm outline-none ring-offset-2 transition placeholder:text-slate-400 focus:border-lime-500 focus:ring-2 focus:ring-lime-300/40"
+                placeholder="Search paths or tech..."
+                className="h-11 w-full rounded-xl border border-white/10 bg-[#101621] pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-lime-300/60 focus:ring-2 focus:ring-lime-300/20"
               />
-            </div>
-            <div
-              className="flex flex-col gap-3"
-              role="listbox"
-              aria-label="Technical career paths"
-            >
-              {filteredCareers.map((career, index) => {
-                const Icon = career.icon;
-                return (
-                  <button
-                    key={career.id}
-                    type="button"
-                    onClick={() => setSelectedId(career.id)}
-                    aria-selected={selected.id === career.id}
-                    className={cn(
-                      "group flex items-center gap-4 rounded-2xl border p-5 text-left transition-all",
-                      selected.id === career.id
-                        ? "border-lime-300/40 bg-[#17221d] text-white shadow-lg shadow-lime-300/10"
-                        : "border-white/10 bg-[#101621] hover:-translate-y-0.5 hover:border-lime-300/30 hover:bg-[#141d29] hover:shadow-md",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "flex size-11 shrink-0 items-center justify-center rounded-xl",
-                        selected.id === career.id
-                          ? "bg-lime-300 text-slate-950"
-                          : career.accent,
-                      )}
-                    >
-                      <Icon aria-hidden="true" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="flex items-center gap-2">
-                        <span className="truncate font-semibold">
-                          {career.title}
-                        </span>
-                        {index < 4 && (
-                          <Badge
-                            variant="secondary"
-                            className={cn(
-                              "hidden text-[10px] sm:inline-flex",
-                              selected.id === career.id &&
-                                "bg-white/10 text-slate-200",
-                            )}
-                          >
-                            {career.family.split(" ")[0]}
-                          </Badge>
-                        )}
-                      </span>
-                      <span
-                        className={cn(
-                          "mt-1 block text-xs",
-                          selected.id === career.id
-                            ? "text-slate-400"
-                            : "text-slate-500",
-                        )}
-                      >
-                        {career.eyebrow}
-                      </span>
-                    </span>
-                    <ChevronRight
-                      className={cn(
-                        "shrink-0 transition-transform group-hover:translate-x-0.5",
-                        selected.id === career.id
-                          ? "text-lime-300"
-                          : "text-slate-300",
-                      )}
-                      aria-hidden="true"
-                    />
-                  </button>
-                );
-              })}
+              {query && (
+                <button
+                  onClick={() => setQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500 hover:text-white"
+                >
+                  Clear
+                </button>
+              )}
             </div>
           </div>
 
-          <Card className="overflow-hidden rounded-[1.75rem] border-white/10 bg-[#101621] text-slate-100 shadow-xl shadow-black/20">
-            <CardHeader className="border-b border-white/10 bg-gradient-to-br from-[#15211c] to-[#101621] p-7 sm:p-9">
+          {/* Filter Pills */}
+          <div className="mb-8 flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={cn(
+                  "rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
+                  selectedCategory === cat
+                    ? "bg-lime-300 text-slate-950 font-semibold shadow-md shadow-lime-300/20"
+                    : "border border-white/10 bg-[#101621] text-slate-400 hover:border-lime-300/30 hover:text-white",
+                )}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Paths Grid */}
+          {filteredCareers.length === 0 ? (
+            <div className="rounded-2xl border border-white/10 bg-[#101621] p-12 text-center">
+              <p className="text-lg text-slate-300">No career paths matched your criteria.</p>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setQuery("");
+                  setSelectedCategory("All Paths");
+                }}
+                className="mt-4 border-white/15 bg-white/5 text-slate-200"
+              >
+                Reset Filters
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredCareers.map((career) => {
+                const Icon = career.icon;
+                const isSaved = savedPathIds.includes(career.id);
+
+                return (
+                  <div
+                    key={career.id}
+                    onClick={() => setModalCareer(career)}
+                    className="group relative flex flex-col justify-between cursor-pointer rounded-2xl border border-white/10 bg-[#101621] p-6 text-left transition-all duration-200 hover:-translate-y-1 hover:border-lime-300/40 hover:bg-[#131b28] hover:shadow-xl hover:shadow-lime-300/5"
+                  >
+                    <div>
+                      {/* Top Row: Icon + Badges + Bookmark */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div
+                          className={cn(
+                            "flex size-12 shrink-0 items-center justify-center rounded-xl border transition-colors group-hover:scale-105",
+                            career.accent,
+                          )}
+                        >
+                          <Icon className="size-6" />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant="secondary"
+                            className="bg-white/5 text-[11px] font-normal text-slate-400 border border-white/5"
+                          >
+                            {career.level}
+                          </Badge>
+                          <button
+                            type="button"
+                            onClick={(e) => toggleSavePath(career.id, e)}
+                            title={isSaved ? "Saved to your list" : "Save this path"}
+                            className={cn(
+                              "rounded-lg p-1.5 transition-colors",
+                              isSaved
+                                ? "text-lime-300 bg-lime-300/10 hover:bg-lime-300/20"
+                                : "text-slate-500 hover:bg-white/10 hover:text-slate-300",
+                            )}
+                          >
+                            {isSaved ? (
+                              <BookmarkCheck className="size-4" />
+                            ) : (
+                              <Bookmark className="size-4" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Header details */}
+                      <div className="mt-5">
+                        <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-lime-400/80">
+                          {career.family}
+                        </p>
+                        <h3 className="mt-1 text-xl font-bold tracking-tight text-white group-hover:text-lime-200">
+                          {career.title}
+                        </h3>
+                        <p className="mt-1 text-xs font-medium text-slate-400">
+                          {career.eyebrow}
+                        </p>
+                      </div>
+
+                      {/* Description */}
+                      <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-300">
+                        {career.description}
+                      </p>
+
+                      {/* Toolkit pills */}
+                      <div className="mt-5 flex flex-wrap gap-1.5">
+                        {career.tools.slice(0, 4).map((tool) => (
+                          <span
+                            key={tool}
+                            className="rounded-md border border-white/5 bg-[#0b111b] px-2 py-0.5 text-[11px] font-mono text-slate-400"
+                          >
+                            {tool}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Bottom Action Row */}
+                    <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-xs font-medium text-slate-400">
+                      <span className="flex items-center gap-1.5 text-lime-300 group-hover:translate-x-1 transition-transform">
+                        View details
+                        <ArrowRight className="size-3.5" />
+                      </span>
+                      <a
+                        href={`/resources/${career.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 text-slate-400 hover:text-white"
+                      >
+                        Roadmap
+                        <ExternalLink className="size-3" />
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        {/* Pathfinder CTA Card */}
+        <section
+          id="start"
+          className="mt-20 rounded-[2rem] border border-lime-300/20 bg-gradient-to-br from-[#17221d] to-[#101621] p-8 text-slate-100 shadow-2xl shadow-lime-300/5 sm:p-10"
+        >
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-start gap-5">
+              <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-lime-300 text-slate-950 shadow-lg shadow-lime-300/20">
+                <UserRound className="size-7" aria-hidden="true" />
+              </span>
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight text-white">
+                  Not sure which direction suits you best?
+                </h2>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">
+                  Take the interactive Pathfinder assessment. Answer a few questions about
+                  your current skills and favorite problems, and we’ll match you with your
+                  strongest technical career route and save the recommendation to your account.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row shrink-0">
+              <a
+                href="/pathfinder"
+                className="inline-flex h-9 items-center justify-center rounded-full bg-lime-300 px-6 text-sm font-semibold text-slate-950 transition hover:bg-lime-200"
+              >
+                Find my path <Sparkles className="ml-2 size-4" />
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* POPUP CARD MODAL */}
+      {modalCareer && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-career-title"
+          onClick={() => setModalCareer(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-150 overflow-y-auto"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative my-8 w-full max-w-3xl overflow-hidden rounded-[2rem] border border-white/15 bg-[#101621] text-slate-100 shadow-2xl shadow-black/80 animate-in zoom-in-95 duration-150"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setModalCareer(null)}
+              aria-label="Close details"
+              className="absolute right-5 top-5 z-10 flex size-9 items-center justify-center rounded-full bg-white/10 text-slate-300 transition hover:bg-white/20 hover:text-white"
+            >
+              <X className="size-5" />
+            </button>
+
+            {/* Modal Header */}
+            <div className="border-b border-white/10 bg-gradient-to-br from-[#16241e] via-[#101621] to-[#0b111b] p-7 sm:p-9">
               <div className="flex items-start justify-between gap-4">
-                <span
+                <div
                   className={cn(
-                    "flex size-14 items-center justify-center rounded-2xl",
-                    selected.accent,
+                    "flex size-16 items-center justify-center rounded-2xl border shadow-lg",
+                    modalCareer.accent,
                   )}
                 >
-                  <SelectedIcon aria-hidden="true" />
-                </span>
-                <Badge
-                  variant="outline"
-                  className="rounded-full border-slate-200 text-slate-500"
-                >
-                  {selected.level}
-                </Badge>
+                  <modalCareer.icon className="size-8" />
+                </div>
+                <div className="flex items-center gap-2 mr-10">
+                  <Badge
+                    variant="outline"
+                    className="border-white/15 bg-white/5 text-slate-300"
+                  >
+                    {modalCareer.level}
+                  </Badge>
+                </div>
               </div>
-              <p className="mt-8 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-lime-700">
-                {selected.family}
+
+              <p className="mt-6 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-lime-400">
+                {modalCareer.family}
               </p>
-              <CardTitle className="mt-2 text-3xl tracking-[-0.03em] sm:text-4xl">
-                {selected.title}
-              </CardTitle>
-              <CardDescription className="max-w-2xl pt-2 text-base leading-7 text-slate-300">
-                {selected.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-7 sm:p-9">
-              <div className="grid gap-9 md:grid-cols-2">
+              <h2
+                id="modal-career-title"
+                className="mt-1 text-3xl font-bold tracking-tight text-white sm:text-4xl"
+              >
+                {modalCareer.title}
+              </h2>
+              <p className="mt-1 text-sm font-medium text-slate-400">
+                {modalCareer.eyebrow}
+              </p>
+              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
+                {modalCareer.description}
+              </p>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-7 sm:p-9">
+              <div className="grid gap-8 md:grid-cols-2">
+                {/* Column A: Work */}
                 <div>
-                  <h3 className="flex items-center gap-2 text-sm font-semibold">
-                    <span className="flex size-6 items-center justify-center rounded-full bg-lime-100 font-mono text-xs text-lime-800">
+                  <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
+                    <span className="flex size-6 items-center justify-center rounded-full bg-lime-300 font-mono text-xs font-bold text-slate-950">
                       A
                     </span>
                     What you will do
                   </h3>
-                  <ul className="mt-5 flex flex-col gap-4">
-                    {selected.work.map((item) => (
+                  <ul className="mt-4 flex flex-col gap-3.5">
+                    {modalCareer.work.map((item) => (
                       <li
                         key={item}
-                        className="flex gap-3 text-base leading-7 text-slate-300"
+                        className="flex gap-3 text-sm leading-6 text-slate-300"
                       >
-                        <Check
-                          className="mt-0.5 shrink-0 text-lime-600"
-                          data-icon="inline-start"
-                        />
-                        {item}
+                        <Check className="mt-1 size-4 shrink-0 text-lime-400" />
+                        <span>{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
+
+                {/* Column B: Skills */}
                 <div>
-                  <h3 className="flex items-center gap-2 text-sm font-semibold">
-                    <span className="flex size-6 items-center justify-center rounded-full bg-violet-100 font-mono text-xs text-violet-800">
+                  <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
+                    <span className="flex size-6 items-center justify-center rounded-full bg-violet-400 font-mono text-xs font-bold text-slate-950">
                       B
                     </span>
-                    Skills to build
+                    Key skills to build
                   </h3>
-                  <ul className="mt-5 flex flex-col gap-4">
-                    {selected.skills.map((item) => (
+                  <ul className="mt-4 flex flex-col gap-3.5">
+                    {modalCareer.skills.map((item) => (
                       <li
                         key={item}
-                        className="flex gap-3 text-base leading-7 text-slate-300"
+                        className="flex gap-3 text-sm leading-6 text-slate-300"
                       >
-                        <ArrowRight
-                          className="mt-1 shrink-0 text-violet-500"
-                          data-icon="inline-start"
-                        />
-                        {item}
+                        <ArrowRight className="mt-1 size-4 shrink-0 text-violet-400" />
+                        <span>{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
-              <Separator className="my-9" />
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+              <Separator className="my-8 border-white/10" />
+
+              {/* Toolkit & Actions */}
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
-                    A useful toolkit
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    Typical Toolkit & Stack
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {selected.tools.map((tool) => (
+                    {modalCareer.tools.map((tool) => (
                       <Badge
                         key={tool}
                         variant="secondary"
-                        className="rounded-md bg-slate-100 px-3 py-1 text-slate-700"
+                        className="border border-white/10 bg-[#0b111b] px-3 py-1 text-slate-300 font-mono text-xs"
                       >
                         {tool}
                       </Badge>
                     ))}
                   </div>
                 </div>
-                <Button
-                  asChild
-                  className="shrink-0 rounded-full bg-slate-950 text-white hover:bg-slate-800"
-                >
-                  <a href={`/resources/${selected.id}`}>
-                    Start learning <ArrowRight data-icon="inline-end" />
-                  </a>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
 
-        <section
-          id="start"
-          className="mt-14 rounded-[1.75rem] border border-lime-300/20 bg-gradient-to-br from-[#17221d] to-[#101621] p-7 text-slate-100 shadow-xl shadow-lime-300/5 sm:p-9"
-        >
-          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-start gap-4">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-lime-300 text-slate-950">
-                <UserRound aria-hidden="true" />
-              </span>
-              <div>
-                <h2 className="text-xl font-semibold tracking-tight">
-                  Not sure where to start?
-                </h2>
-                <p className="mt-1 max-w-xl text-sm leading-6 text-slate-400">
-                  Answer two quick questions and Pathfinder will suggest the
-                  strongest route for your current skills and interests.
-                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => toggleSavePath(modalCareer.id)}
+                    className="rounded-full border-white/15 bg-white/5 text-slate-200 hover:bg-white/10"
+                  >
+                    {savedPathIds.includes(modalCareer.id) ? (
+                      <>
+                        <BookmarkCheck className="mr-2 size-4 text-lime-300" />
+                        Saved
+                      </>
+                    ) : (
+                      <>
+                        <Bookmark className="mr-2 size-4" />
+                        Save Path
+                      </>
+                    )}
+                  </Button>
+
+                  <a
+                    href={`/resources/${modalCareer.id}`}
+                    className="inline-flex h-9 items-center justify-center rounded-full bg-lime-300 px-6 text-sm font-semibold text-slate-950 transition hover:bg-lime-200"
+                  >
+                    Start Learning <ArrowRight className="ml-2 size-4" />
+                  </a>
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button
-                asChild
-                className="rounded-full bg-lime-300 text-slate-950 hover:bg-lime-200"
-              >
-                <a href="/pathfinder">
-                  Find my path <Sparkles data-icon="inline-end" />
-                </a>
-              </Button>
-              <Button
-                variant="outline"
-                className="rounded-full border-white/15 bg-transparent text-slate-200 hover:bg-white/10"
-                onClick={() => {
-                  setSelectedId("frontend");
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-              >
-                Reset explorer <ArrowRight data-icon="inline-end" />
-              </Button>
             </div>
           </div>
-        </section>
-      </main>
-      <footer className="border-t border-slate-200/80 px-5 py-8 text-center text-xs text-slate-400">
-        Pathfinder is an educational overview. Role scope varies by company,
-        team, and seniority.
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="border-t border-white/10 px-5 py-8 text-center text-xs text-slate-500">
+        Pathfinder is an educational career mapping tool. Requirements and role scope
+        vary across engineering organizations.
       </footer>
     </div>
   );

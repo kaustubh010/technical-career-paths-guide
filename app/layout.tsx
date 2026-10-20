@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
   title: "Pathfinder — Explore Technical Careers",
@@ -40,9 +41,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased">
-        {children}
+    <html lang="en" className="dark">
+      <body className="antialiased min-h-screen bg-[#080b12] text-slate-100">
+        <Providers>
+          {children}
+        </Providers>
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>
