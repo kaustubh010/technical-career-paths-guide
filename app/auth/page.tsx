@@ -52,7 +52,7 @@ export default function AuthPage() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#080b12] px-5 py-12 text-slate-100">
+    <main className="pathfinder-light flex min-h-screen items-center justify-center bg-slate-50 px-5 py-12 text-slate-900">
       <div className="w-full max-w-md">
         <a
           href="/"

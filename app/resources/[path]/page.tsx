@@ -170,7 +170,7 @@ export default async function PathResourcesPage({
   };
 
   return (
-    <main className="min-h-screen bg-[#080b12] px-5 py-8 text-slate-100 sm:px-8 lg:px-16">
+    <main className="pathfinder-light min-h-screen bg-slate-50 px-5 py-8 text-slate-900 sm:px-8 lg:px-16">
       <div className="mx-auto max-w-6xl">
         <Link
           href="/"

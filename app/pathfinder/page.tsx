@@ -3,14 +3,14 @@ import { PathfinderForm } from "@/components/pathfinder-form";
 
 export default function PathfinderPage() {
   return (
-    <main className="dark min-h-screen bg-[#080b12] px-5 py-8 text-slate-100 sm:py-12">
+    <main className="pathfinder-light min-h-screen bg-slate-50 px-5 py-8 text-slate-900 sm:py-12">
       <div className="mx-auto max-w-4xl">
         <header className="mb-12 flex items-center justify-between">
           <a
             href="/"
             className="flex items-center gap-3 font-mono text-sm font-bold tracking-tight"
           >
-            <span className="flex size-9 items-center justify-center rounded-xl bg-slate-950 text-lime-300">
+            <span className="flex size-9 items-center justify-center rounded-xl bg-lime-300 text-slate-950">
               <Sparkles />
             </span>
             PATHFINDER<span className="text-lime-600">_</span>

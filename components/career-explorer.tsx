@@ -593,7 +593,7 @@ export function CareerExplorer() {
     <div className="pathfinder-light min-h-screen bg-slate-50 text-slate-900">
       {/* Navigation Header */}
       <header className="sticky top-0 z-40 border-b border-white/10 bg-[#080b12]/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:py-4 lg:px-8">
           <a
             href="/"
             className="flex items-center gap-3 transition-opacity hover:opacity-90"
@@ -607,7 +607,7 @@ export function CareerExplorer() {
             </span>
           </a>
 
-          <nav className="flex items-center gap-4 text-xs sm:gap-6 sm:text-sm">
+          <nav className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-[11px] sm:justify-end sm:gap-4 sm:text-xs lg:gap-6 lg:text-sm">
             <a
               href="#paths"
               className="text-slate-300 transition hover:text-lime-300"
