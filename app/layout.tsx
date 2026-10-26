@@ -10,11 +10,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "light dark",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
+  colorScheme: "light",
+  themeColor: "#f8fafc",
 };
 
 export default function RootLayout({
@@ -23,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="antialiased min-h-screen bg-[#080b12] text-slate-100">
+    <html lang="en">
+      <body className="antialiased min-h-screen bg-slate-50 text-slate-900">
         <Providers>
           {children}
         </Providers>

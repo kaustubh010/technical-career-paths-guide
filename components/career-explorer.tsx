@@ -3,13 +3,16 @@
 import { useMemo, useState, useEffect } from "react";
 import {
   ArrowRight,
+  Activity,
   Bot,
   Braces,
+  BriefcaseBusiness,
   Check,
   CircuitBoard,
   Code2,
   Database,
   Eye,
+  FileText,
   GitBranch,
   Network,
   Search,
@@ -18,6 +21,7 @@ import {
   Sparkles,
   TestTube2,
   UserRound,
+  UsersRound,
   Workflow,
   X,
   Bookmark,
@@ -356,6 +360,106 @@ export const careers: Career[] = [
     accent: "bg-teal-500/10 text-teal-400 border-teal-500/20",
     level: "Foundational role",
   },
+  {
+    id: "sre",
+    title: "Site Reliability Engineer",
+    family: "Infrastructure & platforms",
+    eyebrow: "Engineer for reliability",
+    description:
+      "Keep critical services dependable by combining software engineering, operations, and observability at scale.",
+    work: [
+      "Define service level objectives and error budgets with product teams",
+      "Automate repetitive operational work and improve deployment safety",
+      "Design monitoring, alerting, and incident response practices",
+      "Lead post-incident reviews and turn failures into lasting improvements",
+    ],
+    skills: [
+      "Linux, networking, and distributed systems",
+      "Service level indicators, SLOs, and incident management",
+      "Observability with metrics, logs, and traces",
+      "Automation with Go, Python, or Bash",
+      "Cloud platforms, Kubernetes, and infrastructure as code",
+    ],
+    tools: ["Kubernetes", "Prometheus", "Grafana", "Terraform", "Go"],
+    icon: Activity,
+    accent: "bg-blue-500/10 text-blue-700 border-blue-500/20",
+    level: "Reliability focused",
+  },
+  {
+    id: "it-consultant",
+    title: "IT Consultant",
+    family: "Product & design",
+    eyebrow: "Turn technology into outcomes",
+    description:
+      "Help organizations choose, implement, and improve technology systems that solve real business problems.",
+    work: [
+      "Discover business needs through stakeholder interviews and workshops",
+      "Evaluate platforms, vendors, and architectures against clear requirements",
+      "Plan technology migrations and guide implementation teams",
+      "Communicate trade-offs, timelines, risks, and recommendations to clients",
+    ],
+    skills: [
+      "Requirements discovery and stakeholder management",
+      "Business process analysis and technical documentation",
+      "Cloud, SaaS, and enterprise systems fundamentals",
+      "Project planning, estimation, and risk management",
+      "Clear presentations and client communication",
+    ],
+    tools: ["Azure", "AWS", "Jira", "Miro", "SQL"],
+    icon: BriefcaseBusiness,
+    accent: "bg-purple-500/10 text-purple-700 border-purple-500/20",
+    level: "Business + technology",
+  },
+  {
+    id: "product-manager",
+    title: "Technical Product Manager",
+    family: "Product & design",
+    eyebrow: "Choose what to build next",
+    description:
+      "Connect customer needs, business goals, and engineering constraints to guide products from idea to impact.",
+    work: [
+      "Research customer problems and define measurable product outcomes",
+      "Prioritize roadmaps using evidence, constraints, and expected value",
+      "Write clear requirements and align design and engineering teams",
+      "Measure launches, learn from feedback, and iterate the product",
+    ],
+    skills: [
+      "Product discovery, strategy, and roadmap planning",
+      "User stories, acceptance criteria, and prioritization",
+      "Analytics, experimentation, and outcome measurement",
+      "Technical architecture and API literacy",
+      "Cross-functional communication and facilitation",
+    ],
+    tools: ["Jira", "Notion", "Figma", "Amplitude", "SQL"],
+    icon: UsersRound,
+    accent: "bg-rose-500/10 text-rose-700 border-rose-500/20",
+    level: "Customer + systems",
+  },
+  {
+    id: "technical-writer",
+    title: "Technical Writer",
+    family: "Product & design",
+    eyebrow: "Make technology understandable",
+    description:
+      "Create documentation and learning experiences that help developers and users successfully adopt technical products.",
+    work: [
+      "Write API references, tutorials, guides, and architecture documentation",
+      "Interview subject matter experts and validate technical accuracy",
+      "Build documentation sites with versioning, search, and navigation",
+      "Use feedback and analytics to continuously improve content",
+    ],
+    skills: [
+      "Structured writing, editing, and information architecture",
+      "API concepts, Markdown, Git, and documentation workflows",
+      "Basic programming and command-line literacy",
+      "Developer experience and user-focused research",
+      "Content design, accessibility, and localization awareness",
+    ],
+    tools: ["Markdown", "Git", "Docusaurus", "OpenAPI", "VS Code"],
+    icon: FileText,
+    accent: "bg-sky-500/10 text-sky-700 border-sky-500/20",
+    level: "Communication focused",
+  },
 ];
 
 const categories = [
@@ -486,7 +590,7 @@ export function CareerExplorer() {
   }, [query, selectedCategory]);
 
   return (
-    <div className="dark min-h-screen bg-[#080b12] text-slate-100">
+    <div className="pathfinder-light min-h-screen bg-slate-50 text-slate-900">
       {/* Navigation Header */}
       <header className="sticky top-0 z-40 border-b border-white/10 bg-[#080b12]/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
@@ -568,7 +672,7 @@ export function CareerExplorer() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-              Explore 12 high-impact technical career paths. Click on any path to open
+              Explore {careers.length} high-impact technical career paths. Click on any path to open
               detailed breakdowns of day-to-day work, required skills, toolkit stacks,
               and curated learning roadmaps.
             </p>
@@ -576,7 +680,7 @@ export function CareerExplorer() {
             <div className="mt-8 flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-slate-300">
               <span className="flex items-center gap-2">
                 <Check className="size-4 text-lime-300" />
-                12 Specialized Paths
+                {careers.length} Specialized Paths
               </span>
               <span className="flex items-center gap-2">
                 <Check className="size-4 text-lime-300" />
