@@ -909,11 +909,11 @@ export function CareerExplorer() {
           aria-modal="true"
           aria-labelledby="modal-career-title"
           onClick={() => setModalCareer(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-150 overflow-y-auto"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 p-2 backdrop-blur-sm animate-in fade-in duration-150 sm:items-center sm:p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative my-8 w-full max-w-3xl overflow-hidden rounded-[2rem] border border-white/15 bg-[#101621] text-slate-100 shadow-2xl shadow-black/80 animate-in zoom-in-95 duration-150"
+            className="relative my-2 max-h-[calc(100dvh-1rem)] w-full max-w-4xl overflow-y-auto overscroll-contain rounded-2xl border border-white/15 bg-[#101621] text-slate-100 shadow-2xl shadow-black/80 animate-in zoom-in-95 duration-150 sm:my-4 sm:max-h-[calc(100dvh-2rem)] sm:rounded-[2rem]"
           >
             {/* Close Button */}
             <button
@@ -925,7 +925,7 @@ export function CareerExplorer() {
             </button>
 
             {/* Modal Header */}
-            <div className="border-b border-white/10 bg-gradient-to-br from-[#16241e] via-[#101621] to-[#0b111b] p-7 sm:p-9">
+            <div className="border-b border-white/10 bg-gradient-to-br from-[#16241e] via-[#101621] to-[#0b111b] p-5 sm:p-7 lg:p-9">
               <div className="flex items-start justify-between gap-4">
                 <div
                   className={cn(
@@ -963,7 +963,7 @@ export function CareerExplorer() {
             </div>
 
             {/* Modal Content */}
-            <div className="p-7 sm:p-9">
+            <div className="p-5 sm:p-7 lg:p-9">
               <div className="grid gap-8 md:grid-cols-2">
                 {/* Column A: Work */}
                 <div>
